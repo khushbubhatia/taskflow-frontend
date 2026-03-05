@@ -1,7 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'https://taskflow-production-6baf.up.railway.app';
-
+const API_URL = 'https://taskflow-production-6baf.up.railway.app/api';
 const api = axios.create({
   baseURL: API_URL,
   headers: {
