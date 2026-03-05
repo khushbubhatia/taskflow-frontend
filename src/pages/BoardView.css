@@ -367,18 +367,42 @@
   background: #E2E8F0;
 }
 
+/* Responsive - Mobile */
 @media (max-width: 768px) {
+  .board-navbar {
+    padding: 16px 20px;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .board-nav-left {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .board-title {
+    font-size: 20px;
+  }
+
+  .board-ai-btn {
+    width: 100%;
+    justify-content: center;
+  }
+
   .board-content {
-    padding: 24px 16px;
+    padding: 20px 16px;
+    display: block;
   }
 
   .board-columns {
-    gap: 16px;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
   }
 
   .board-column {
-    min-width: 300px;
-    max-width: 300px;
+    min-width: 100%;
+    max-width: 100%;
   }
 
   .board-suggestion-toast {
