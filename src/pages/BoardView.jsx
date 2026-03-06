@@ -30,12 +30,13 @@ function BoardView() {
       ]);
       setBoard(boardData);
       setTasks(tasksData);
+      setLoading(false)
     } catch (error) {
       console.error('Failed to load board:', error);
-      alert('Failed to load board');
-      navigate('/dashboard');
-    } finally {
       setLoading(false);
+      setTimeout(()=>{
+        navigate('/dashboard');
+        }, 2000);
     }
   };
 
