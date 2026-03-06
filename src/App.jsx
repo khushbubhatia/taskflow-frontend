@@ -6,6 +6,9 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import BoardView from './pages/BoardView';
 import Profile from './pages/Profile';
+import NotFound from './pages/NotFound';
+
+
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useContext(AuthContext);
 
@@ -48,6 +51,7 @@ function App() {
               }
               />
           <Route path="/" element={<Navigate to="/dashboard" />} />
+          <Route path='*' element={<NotFound />} />
         </Routes>
       </Router>
     </AuthProvider>

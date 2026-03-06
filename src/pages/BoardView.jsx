@@ -17,6 +17,7 @@ function BoardView() {
   const [suggestion, setSuggestion] = useState(null);
   const [loadingSuggestion, setLoadingSuggestion] = useState(false);
   const [deleteTaskId, setDeleteTaskId] = useState(null);
+  const [touchStartPos, setTouchStartPos] = useState(null);
 
   useEffect(() => {
     loadBoardData();
@@ -69,12 +70,56 @@ function BoardView() {
 
   const handleDragStart = (e, task) => {
     setDraggedTask(task);
-    e.dataTransfer.effectAllowed = 'move';
+    if (e.dataTransfer) {
+      e.dataTransfer.effectAllowed = 'move';
+    }
+  };
+
+  const handleTouchStart = (e, task) => {
+    setDraggedTask(task);
+    setTouchStartPos({
+      x: e.touches[0].clientX,
+      y: e.touches[0].clientY
+    });
+  };
+
+  const handleTouchMove = (e) => {
+    if (!draggedTask) return;
+    e.preventDefault();
+  };
+
+  const handleTouchEnd = async (e) => {
+    if (!draggedTask) return;
+    
+    const touch = e.changedTouches[0];
+    const element = document.elementFromPoint(touch.clientX, touch.clientY);
+    const column = element?.closest('.board-column');
+    
+    if (column) {
+      const newStatus = column.dataset.status;
+      if (newStatus && newStatus !== draggedTask.status) {
+        try {
+          const updatedTasks = tasks.map(t =>
+            t._id === draggedTask._id ? { ...t, status: newStatus } : t
+          );
+          setTasks(updatedTasks);
+          await moveTask(draggedTask._id, { status: newStatus });
+        } catch (error) {
+          console.error('Failed to move task:', error);
+          loadBoardData();
+        }
+      }
+    }
+    
+    setDraggedTask(null);
+    setTouchStartPos(null);
   };
 
   const handleDragOver = (e) => {
     e.preventDefault();
-    e.dataTransfer.dropEffect = 'move';
+    if (e.dataTransfer) {
+      e.dataTransfer.dropEffect = 'move';
+    }
   };
 
   const handleDrop = async (e, newStatus) => {
@@ -90,7 +135,6 @@ function BoardView() {
         t._id === draggedTask._id ? { ...t, status: newStatus } : t
       );
       setTasks(updatedTasks);
-
       await moveTask(draggedTask._id, { status: newStatus });
     } catch (error) {
       console.error('Failed to move task:', error);
@@ -168,6 +212,7 @@ function BoardView() {
               <div 
                 key={column.id} 
                 className="board-column"
+                data-status={column.status}
                 onDragOver={handleDragOver}
                 onDrop={(e) => handleDrop(e, column.status)}
               >
@@ -186,6 +231,9 @@ function BoardView() {
                         className="board-task-card"
                         draggable
                         onDragStart={(e) => handleDragStart(e, task)}
+                        onTouchStart={(e) => handleTouchStart(e, task)}
+                        onTouchMove={handleTouchMove}
+                        onTouchEnd={handleTouchEnd}
                       >
                         <div className="board-task-title">{task.title}</div>
                         {task.description && (
