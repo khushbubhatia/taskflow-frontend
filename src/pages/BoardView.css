@@ -148,7 +148,14 @@
   border-color: #CBD5E1;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
-
+/* Mobile Move Buttons - Hidden on desktop */
+.board-task-mobile-actions {
+  display: none;
+  gap: 8px;
+  margin-top: 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
 .board-task-card:active {
   cursor: grabbing;
 }
